@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filters
+  <span class="caret"></span></button>
+  <ul class="">
+    <li><a href="#">HTML</a></li>
+    <li><a href="#">CSS</a></li>
+    <li><a href="#">JavaScript</a></li>
+  </ul>
+</div>
+<section class="cards">
+    {% for path in image_paths %}
+        <div  class="search-card card">
+            <img src={{ path }} class="img-card" >
+        </div>
+    {% endfor %}
+</section>
+{% endblock content %}
+
