@@ -26,16 +26,16 @@ At the same link you can find a short video that shows how to run the project an
 
 -Frontend :
 From the main directory cmd (or IDE terminal) run the following commands.
-    1. $cd fashionary-front
-    2. $npm i
-    3. $npm start
+1. $cd fashionary-front
+2. $npm i
+3. $npm start
 
 -Backend
 From the main directory cmd (or IDE terminal) run the following commands.
-    1. $cd fashionary-back
-    2. make sure you have the python libraries installed on your pc.
-       $pip install <library_name> , if you need to install any of the python libraries.
-    3. $python app.py 
+1. $cd fashionary-back 
+2. make sure you have the python libraries installed on your pc.
+    $pip install <library_name> , if you need to install any of the python libraries.
+3. $python app.py 
 
 Before using the UI make sure both servers are up.
 
