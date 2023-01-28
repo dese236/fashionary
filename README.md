@@ -20,7 +20,7 @@ The communiction between the servers is preformed by RestAPI calls.
 In order to use the app you need to do the following steps:
 1. Download the features_clip.npy file from: <https://drive.google.com/drive/u/1/folders/1A3Yh6eCY5ziFy4DrC2e5Nz-HIyA4skfY>
 2. Add this file to the following Diractory: fashionary/fashionary-back/static.
-On the same link you can find a short video that shows how to run the project and use the system.
+At the same link you can find a short video that shows how to run the project and use the system.
 
 ## Running the App :
 
