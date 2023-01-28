@@ -1,17 +1,23 @@
-
-
-
 import io
 import clip
 import torch
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import json
+import math
+from PIL import Image
+import urllib3
+import certifi
+import os.path
+from os import path
+from IPython.core.display import HTML
+
+max_products_in_line = 4
 
 # Load the open CLIP model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
-
-
-
-from pathlib import Path
 
 # Set the path to the photos
 photos_path = Path("static/images_new")
@@ -19,19 +25,11 @@ photos_path = Path("static/images_new")
 # List all the photos in the folder
 photos_files = list(photos_path.glob("*.png"))
 
-
-
-import pandas as pd
-import numpy as np
-import json
-import math
-
 df = pd.read_csv("static/df_products.csv")
+
 # Load the photo IDs
-#here you need to change path
 photo_ids = pd.read_csv("static/photo_ids_clip.csv")
 photo_ids = list(photo_ids['photo_id'])
-
 
 #clean photo_ids from nan values
 photo_ids_clean = []
@@ -42,6 +40,7 @@ for photo in photo_ids:
         photo_ids_clean.append(photo)
 
 photo_ids = photo_ids_clean
+
 # Load the features vectors
 photo_features = np.load("static/features_clip.npy")
 
@@ -51,39 +50,13 @@ if device == "cpu":
 else:
     photo_features = torch.from_numpy(photo_features).to(device)
 
-# Print some statistics
-
-
-
-# In[8]:
-
-
-#clean photo_ids from nan values
-photo_ids_clean = []
-def checkNaN(str):
-    return str != str
-for photo in photo_ids:
-    if checkNaN(photo)==False:
-        photo_ids_clean.append(photo)
-
-
-
-
-len(photo_features)==len(photo_ids_clean)
-
-
-
-
 def encode_search_query(search_query):
     with torch.no_grad():
         # Encode and normalize the search query using CLIP
         text_encoded = model.encode_text(clip.tokenize(search_query).to(device))
         text_encoded /= text_encoded.norm(dim=-1, keepdim=True)
-
     # Retrieve the feature vector
     return text_encoded
-
-
 
 def find_best_matches(text_features, photo_features, photo_ids, results_count=3):
     # Compute the similarity between the search query and each photo using the Cosine similarity
@@ -95,36 +68,12 @@ def find_best_matches(text_features, photo_features, photo_ids, results_count=3)
     # Return the photo IDs of the best matches
     return [photo_ids[i] for i in best_photo_idx[:results_count]]
 
-
-# The `display_photo` function displays a photo from Our data given its ID and serial number. 
-# 
-
-# In[59]:
-
-
-# from IPython.display import Image
-from PIL import Image
-
-from IPython.core.display import HTML
-
 def display_photo(photo_id):
     # Get the URL of the photo resized to have a width of 320px
     photo = (f"static/images_new/{photo_id}.png")
-
     # Display the photo
     display(Image.open(photo))
 
-
-
-# Putting it all together in one function: defining the search function.
-
-# In[60]:
-# def get_set_of_images(photo_id):
-#     raw = photo_features[0][0]
-#     print(raw)
-
-import urllib3
-import certifi
 def search(search_query, photo_features, photo_ids, results_count=3):
     # in case the input is an image id
     image_flag = False
@@ -137,10 +86,9 @@ def search(search_query, photo_features, photo_ids, results_count=3):
         text_features = encode_search_query('')
         http = urllib3.PoolManager(
         cert_reqs='CERT_REQUIRED',
-        ca_certs=certifi.where()
-            )
+        ca_certs=certifi.where())
 
-            # Open the image using the URL stored in the variable 'x'
+        # Open the image using the URL stored in the variable 'x'
         response = http.request('GET', search_query)
         photo = Image.open(io.BytesIO(response.data))
         pre_photo = preprocess(photo).to(device).unsqueeze(0)
@@ -152,9 +100,9 @@ def search(search_query, photo_features, photo_ids, results_count=3):
     else: 
         # Encode the search query
         features = encode_search_query(search_query)
-    
+
     best_photo_ids = find_best_matches(features, photo_features, photo_ids, 4)
-    
+  
     # Find the best matches
     photos = []
     brands = []
@@ -168,11 +116,12 @@ def search(search_query, photo_features, photo_ids, results_count=3):
     for brand in np.unique(np.array(brands)).tolist():
             brands_dict.append({brand : brand})
 
-
     return {"best_photo_ids" : photos ,"brands":brands_dict, "styles":styles,  'headers':{"Access-Control-Allow-Origin": "*"} } 
 
+def get_images(search_query): 
+    return search(search_query, photo_features, photo_ids_clean , 4)
 
-
+#Util functions for recieving image features from data based on image ID
 def get_image_url(id):
     id_split = id.split('_')
     return df[(df.asin == str(id_split[1]))].imageURLHighRes.values[0].split("'")[1::2][int(id_split[2])]
@@ -193,31 +142,16 @@ def get_style(id):
     id_split = id.split('_')
     style_str = df[(df.asin == str(id_split[1]))]["style"].values[0]
     return json.loads(style_str.replace("'" , '"'))
-
-def get_pothos(search_query): 
-    return search(search_query, photo_features, photo_ids_clean , 4)
-
-import os.path
-from os import path    
-max_products_in_line = 4
+   
 def see_similar(photo_id):
-    print("photo_id" , photo_id)
     photo_id_num = photo_id[-1]
     photos = []
-    print(f"static/images_new/{photo_id[:-1]}{5}.png")
     for i in range(max_products_in_line):
         if i!= photo_id_num and path.exists(f"static/images_new/{photo_id[:-1]}{i}.png"):
             photos.append(photo_id[:-1]+f'{i}')
-                # display_photo(photo_id[:-1]+f'{i}')
     return {"photos" : photos ,  'headers':{"Access-Control-Allow-Origin": "*"}}
-# search_query = "flower dress long"
-
-# search(search_query, photo_features, photo_ids_clean)
-
 
 def search_and_concept(search_query, photo_features, photo_ids, concept, photo_weight=0.5 , results_count=4):
-
-    print("search with concept : " , concept ,search_query)
     # Encode the search query
     image_flag = False
     text_features = encode_search_query(concept)
@@ -259,9 +193,5 @@ def search_and_concept(search_query, photo_features, photo_ids, concept, photo_w
 
     return {"best_photo_ids" : photos , 'headers':{"Access-Control-Allow-Origin": "*"} } 
 
-
-
-
 def get_concept(search_query , concept):
-    print(" concept " , concept)
     return search_and_concept(search_query, photo_features, photo_ids, concept,photo_weight=0.5 , results_count=4)
