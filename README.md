@@ -8,7 +8,7 @@ In this project you can find a new and improved personalized browsing experience
 ENJOY!
 
 The application is using 2 servers: 
-* nodeJS (using React) for the frontend running on port 3000
+* nodeJS (using React) for the frontend running on port 3000.
 * Python Flask in the backend Running on port 5000.
 
 The servers are running independetly, they need to be awaked seperatly.
@@ -18,19 +18,20 @@ The communiction between the servers is preformed by RestAPI calls.
 
 ## Using the app:
 In order to use the app you need to do the following steps:
-1. Download the features.npy file from: <Link>
-2. add this file to the following Diractory: fashionary/fashionary-back/static.
+1. Download the features_clip.npy file from: <https://drive.google.com/drive/u/1/folders/1A3Yh6eCY5ziFy4DrC2e5Nz-HIyA4skfY>
+2. Add this file to the following Diractory: fashionary/fashionary-back/static.
+On the same link you can find a short video that shows how to run the project and use the system.
 
 ## Running the App :
 
 -Frontend :
-from the main directory cmd(or IDE terminal) run the following commands.
+From the main directory cmd (or IDE terminal) run the following commands.
     1. $cd fashionary-front
     2. $npm i
     3. $npm start
 
 -Backend
-from the main directory cmd(or IDE terminal) run the following commands.
+From the main directory cmd (or IDE terminal) run the following commands.
     1. $cd fashionary-back
     2. make sure you have the python libraries installed on your pc.
        $pip install <library_name> , if you need to install any of the python libraries.
