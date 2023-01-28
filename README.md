@@ -1,7 +1,7 @@
 # Fashionary - Personalied visual browsing
 
 ## Background :
-Welcome to fasiohnary! This is the go-to place for all latest fashion trend :)
+Welcome to Fashionary! This is the go-to place for all latest fashion trend :)
 This project is a final project we created during our studies in the course:
 Intelligent Interactive System at the Technion.
 In this project you can find a new and improved personalized browsing experience using CLIP model.
