@@ -2,7 +2,6 @@ import ast
 import json
 from flask import request
 from flask import Flask , render_template , url_for , redirect , session
-from forms import TextSearchForm 
 import clip_text_image_search
 from flask_cors import CORS , cross_origin
 

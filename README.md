@@ -7,8 +7,8 @@ The communiction between the servers is preformed by RestAPI calls.
 ## Clone the project to yout pc !!!
 
 ## Using the app:
-In order to use the app you need to Downloaf the features.npy file from :
- <Link>
+In order to use the app you need to Downloaf the features_clip.npy file from :
+https://drive.google.com/drive/u/0/folders/1A3Yh6eCY5ziFy4DrC2e5Nz-HIyA4skfY
 and add it to the following Diractory:
 fashionary/fashionary-back/static.
 
